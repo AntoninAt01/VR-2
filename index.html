@@ -8,29 +8,35 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
 </head>
 <body>
-    <a-scene fog="type: exponential; color: #000000; density: 0.0025">
+    <a-scene fog="type: linear; color: #2E3042; near: 0.5; far: 445">
         <a-asset>
 
             <a-asset-item id="titanic" src="./assets/Titanic/titanic.glb"></a-asset-item>
             <a-asset-item id="iceberg" src="./assets/Titanic/iceberg.glb"></a-asset-item>
             <a-asset-item id="boat" src="./assets/Titanic/boat.glb"></a-asset-item>
-
-            <audio id="foule" src="./assets/Titanic/foule.mp3" autoplay></audio>
-            <audio id="metal" src="./assets/Titanic/metal3.wav" autoplay></audio>
             
         </a-asset>
+
+        <a-entity position="-100 -20 -250" sound="src: ./assets/Titanic/foule.mp3; autoplay: true; volume: 15 loop: true"></a-entity>
+        <a-entity position="-100 -20 -250" sound="src: ./assets/Titanic/metal4.wav; autoplay: true; volume: 40 loop: true"></a-entity>
+        <a-entity position="-100 -20 -250" sound="src: ./assets/Titanic/metal2.wav; autoplay: true; volume: 40 loop: true"></a-entity>
+
+
 
         <a-entity id="model" gltf-model="#titanic" position="-100 -20 -250" scale="70 70 70" rotation="0 -15 0" 
             animation="property: position; to: 0 -400 -200; dur: 400000; easing: linear; loop: false"
             animation__rotation="property: rotation; to: 0 0 -90; dur: 200000; easing: easeInOutSine; loop: false"
-            sound="src: #foule; autoplay: true; volume: 0.05"
+            sound="src: ./assets/Titanic/metal3.wav; autoplay: true; volume: 170" loop: true
            ></a-entity>
 
-        <a-entity gltf-model="#iceberg" position="-375 -120 5" scale="70 130 70" rotation="0 -25 0"></a-entity>
+        <a-entity gltf-model="#iceberg" position="-375 -120 5" scale="70 130 70" rotation="0 -25 0"
+        ></a-entity>
+
 
         <a-entity id="group" position="0 0 0" rotation="0 0 0" ocean-movement>
             <!-- Bateau -->
-            <a-entity gltf-model="#boat" position="0 0.1 0" scale="0.02 0.02 0.02" rotation="0 90 0"></a-entity>
+            <a-entity gltf-model="#boat" position="0 0.14 0" scale="0.02 0.02 0.02" rotation="0 90 0" 
+                  sound="src: ./assets/Titanic/mer.wav; autoplay: true; volume: 2; loop: true"></a-entity>
           
             <!-- Océan -->
             <a-ocean width="500" depth="500" density="400" opacity="1" position="0 -0.2 0" 
@@ -41,6 +47,11 @@
             <a-plane position="0 -0.2 0" rotation="-90 0 0" width="1000" height="1000"
                      material="shader: standard; color: #182264; metalness: 0.5; roughness: 0.1; opacity: 0.9;">
             </a-plane>
+            
+        </a-entity>
+
+        <a-entity player-movement>
+          <a-entity camera look-controls position="0 1.5 0"></a-entity>
         </a-entity>
 
         <a-entity
@@ -48,6 +59,7 @@
         position="-200 100 -200"
         animation="property: rotation; to: 0 -360 0; loop: true; dur: 20000; easing: linear">
         </a-entity>
+
         
         <a-sky src="assets/Titanic/space.jpg"></a-sky>
 
@@ -56,6 +68,30 @@
               schema: {
                 amplitude: {type: 'number', default: 0.2}, // Hauteur des vagues (mouvement vertical)
                 rotationAmplitude: {type: 'number', default: 1}, // Intensité de la rotation (en degrés)
+                speed: {type: 'number', default: 2} // Vitesse de l'animation
+              },
+              init: function () {
+                this.time = 0; // Temps pour animer
+              },
+              tick: function (time, timeDelta) {
+                const el = this.el.object3D;
+                const data = this.data;
+        
+                // Mise à jour du temps
+                this.time += timeDelta * 0.0005; // Convertir en secondes
+        
+                // Mouvement vertical (oscillation de haut en bas)
+                el.position.y = Math.sin(this.time * data.speed) * data.amplitude;
+        
+                // Légère rotation pour simuler l'inclinaison
+                el.rotation.x = Math.sin(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); 
+                el.rotation.z = Math.cos(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); 
+              }
+            });
+            AFRAME.registerComponent('player-movement', {
+              schema: {
+                amplitude: {type: 'number', default: 0.2}, // Hauteur des vagues (mouvement vertical)
+                rotationAmplitude: {type: 'number', default: .2}, // Intensité de la rotation (en degrés)
                 speed: {type: 'number', default: 2} // Vitesse de l'animation
               },
               init: function () {

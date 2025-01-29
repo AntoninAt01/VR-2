@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,8 +72,8 @@
                 el.position.y = Math.sin(this.time * data.speed) * data.amplitude;
         
                 // Légère rotation pour simuler l'inclinaison
-                el.rotation.x = Math.sin(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); // Rotation autour de l'axe X
-                el.rotation.z = Math.cos(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); // Rotation autour de l'axe Z
+                el.rotation.x = Math.sin(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); 
+                el.rotation.z = Math.cos(this.time * data.speed) * (data.rotationAmplitude * Math.PI / 180); 
               }
             });
           </script>
